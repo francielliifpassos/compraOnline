@@ -1,7 +1,7 @@
-package ifsuldeminas.compraOnline.model.comercial;
+package ifsuldeminas.compraOnline.model.entities.comercial;
 
-import ifsuldeminas.compraOnline.model.pessoal.Comprador;
-import ifsuldeminas.compraOnline.model.pessoal.Vendedor;
+import ifsuldeminas.compraOnline.model.entities.pessoal.Comprador;
+import ifsuldeminas.compraOnline.model.entities.pessoal.Vendedor;
 
 import javax.persistence.*;
 import java.util.Date;

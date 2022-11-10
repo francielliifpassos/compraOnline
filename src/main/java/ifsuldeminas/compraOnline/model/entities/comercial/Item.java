@@ -1,4 +1,4 @@
-package ifsuldeminas.compraOnline.model.comercial;
+package ifsuldeminas.compraOnline.model.entities.comercial;
 
 import javax.persistence.*;
 
