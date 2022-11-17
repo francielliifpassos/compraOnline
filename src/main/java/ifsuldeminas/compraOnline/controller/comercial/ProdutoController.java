@@ -2,10 +2,9 @@ package ifsuldeminas.compraOnline.controller.comercial;
 
 import ifsuldeminas.compraOnline.model.entities.comercial.Produto;
 import ifsuldeminas.compraOnline.model.repositories.comercial.ProdutoRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
@@ -37,5 +36,45 @@ public class ProdutoController {
         //executando um metodo de produtoRepository.
         // O metodo save retorna o proprio produto.
         return produtoRepository.save(produto);
+    }
+
+    //operacoes read
+
+    //lista produtos
+    @GetMapping
+    public List<Produto> listaProdutos(){
+        return this.produtoRepository.findAll();
+    }
+
+    //lista dados de um produto
+    @GetMapping("/{id}")
+    public Produto listaProduto(@PathVariable Long id){
+        return this.produtoRepository.getById(id);
+
+        //implementar depois: tratamento de erros
+    }
+
+    //operacao update
+    @PutMapping("/{id}")
+    public Produto atualiza(@RequestBody Produto produto, @PathVariable Long id){
+        //buscando no BD
+        Produto produtoBD = this.produtoRepository.getById(id);
+
+        //implementar depois: tratamento de erros
+
+        //atualizando os dados do produto
+        produtoBD.setNome(produto.getNome());
+        produtoBD.setDescricao(produto.getDescricao());
+        produtoBD.setPreco(produto.getPreco());
+        //atualizando no BD e retornando os dados do produto
+        return this.produtoRepository.save(produtoBD);
+    }
+
+    //operacao delete
+    @DeleteMapping("/{id}")
+    public void deleta(@PathVariable Long id){
+        this.produtoRepository.deleteById(id);
+
+        //implementar depois: tratamento de erros
     }
 }
