@@ -4,14 +4,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Produto {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
+    @NotNull
+    @NotBlank
     private String nome;
     private String descricao;
+    @NotNull
+    @DecimalMin(value = "9.90")
     private double preco;
 
     //construtor padrao

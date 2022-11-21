@@ -2,9 +2,13 @@ package ifsuldeminas.compraOnline.controller.comercial;
 
 import ifsuldeminas.compraOnline.model.entities.comercial.Produto;
 import ifsuldeminas.compraOnline.model.repositories.comercial.ProdutoRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/produtos")
@@ -29,7 +33,7 @@ public class ProdutoController {
      * obtidos pelo corpo da requisicao (request body)
      */
     @PostMapping
-    public Produto cadastra(@RequestBody Produto produto){
+    public Produto cadastra(@Valid @RequestBody Produto produto){
         //verificar os dados (implementaremos depois)
 
         //se os dados estiverem ok, cadastra o produto no BD
@@ -48,33 +52,44 @@ public class ProdutoController {
 
     //lista dados de um produto
     @GetMapping("/{id}")
-    public Produto listaProduto(@PathVariable Long id){
-        return this.produtoRepository.getById(id);
-
-        //implementar depois: tratamento de erros
+    public ResponseEntity<Produto> listaProduto(@PathVariable Long id){
+        Optional<Produto> opt = this.produtoRepository.findById(id);
+        if(opt.isPresent()){
+            Produto produto = opt.get();
+            return new ResponseEntity<Produto>(produto, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<Produto>(HttpStatus.NOT_FOUND);
+        }
     }
 
     //operacao update
     @PutMapping("/{id}")
-    public Produto atualiza(@RequestBody Produto produto, @PathVariable Long id){
+    public ResponseEntity<Produto> atualiza(@Valid @RequestBody Produto produto, @PathVariable Long id){
         //buscando no BD
-        Produto produtoBD = this.produtoRepository.getById(id);
+        Optional<Produto> opt = this.produtoRepository.findById(id);
 
-        //implementar depois: tratamento de erros
-
-        //atualizando os dados do produto
-        produtoBD.setNome(produto.getNome());
-        produtoBD.setDescricao(produto.getDescricao());
-        produtoBD.setPreco(produto.getPreco());
-        //atualizando no BD e retornando os dados do produto
-        return this.produtoRepository.save(produtoBD);
+        if(opt.isPresent()){
+            Produto produtoBD = opt.get();
+            //atualizando os dados do produto
+            produtoBD.setNome(produto.getNome());
+            produtoBD.setDescricao(produto.getDescricao());
+            produtoBD.setPreco(produto.getPreco());
+            //atualizando no BD e retornando os dados do produto
+            this.produtoRepository.save(produtoBD);
+            return new ResponseEntity<Produto>(produtoBD, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<Produto>(HttpStatus.NOT_FOUND);
+        }
     }
 
     //operacao delete
     @DeleteMapping("/{id}")
-    public void deleta(@PathVariable Long id){
-        this.produtoRepository.deleteById(id);
-
-        //implementar depois: tratamento de erros
+    public ResponseEntity deleta(@PathVariable Long id){
+        try {
+            this.produtoRepository.deleteById(id);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }catch (RuntimeException e){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 }
